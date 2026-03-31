@@ -27,7 +27,7 @@ class Producto {
   factory Producto.fromMap(Map<String, dynamic> map) => Producto(
     id: '${map['id'] ?? ''}',
     title: (map['title']) ?? ' ',
-    price: (map['price']) ?? 0.0,
+    price: (map['price'] as num?)?.toDouble() ?? 0.0,
     description: (map['description']) ?? ' ',
     category: (map['category']) ?? 'Unknown',
     image: (map['image']) ?? 'https://via.placeholder.com/150',

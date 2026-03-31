@@ -13,15 +13,14 @@ class MusicService {
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
-        final Map<String, dynamic> data = json.decode(response.body);
-        final List results = data['results'];
+        final List<dynamic> data = json.decode(response.body);
 
-        return results.map((item) {
+        return data.map((item) {
           return Producto(
 
             id: item['id'].toString(), 
-            title: item['tittle'] ?? 'Sin título',
-            price: item['price'] ?? 'Sin precio',
+            title: item['title'] ?? 'Sin título',
+            price: (item['price'] as  num?)?.toDouble() ?? 3.4,
             description: item['description'] ?? 'Sin descripcion',
             category: item['category'] ?? 'Sin categoria',
             
