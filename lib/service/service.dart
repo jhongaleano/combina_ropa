@@ -12,9 +12,20 @@ class ProductService {
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
-        final List<dynamic> decodedData = json.decode(response.body);
+        final List<dynamic> data = json.decode(response.body);
 
-        return decodedData.map((item) => Producto.fromMap(item)).toList();
+        return data.map((item) {
+          return Producto(
+
+            id: item['id'].toString(), 
+            title: item['title'] ?? 'Sin título',
+            price: (item['price'] as  num?)?.toDouble() ?? 3.4,
+            description: item['description'] ?? 'Sin descripcion',
+            category: item['category'] ?? 'Sin categoria',
+            
+            image: item['image'] ?? 'https://via.placeholder.com/150',
+          );
+        }).toList();
       } else {
         throw 'Error en la respuesta del servidor: ${response.statusCode}';
       }
