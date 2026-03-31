@@ -15,21 +15,20 @@ class ModelsCamera {
 
 
 
-  Map<String,dynamic>tojson()=>{
-    'id':id,
-    'name':name,
-    'category':category,
-    'image':image,
-    'isFavorite':isFavorite
+  Map<String, dynamic> toMap() => {
+    'id': id,
+    'name': name,
+    'category': category,
+    'image': image,
+    'isFavorite': isFavorite,
   };
 
-  factory ModelsCamera.fromJson(Map<String,dynamic>
-  json)=>ModelsCamera(
-    id: json['id'],
-    name: json['name'],
-    category: json['category'],
-    image: json['image'],
-    isFavorite: json['isFavorite']
+  factory ModelsCamera.fromMap(Map<String, dynamic> map) => ModelsCamera(
+    id: map['id'],
+    name: map['name'],
+    category: map['category'],
+    image: map['image'],
+    isFavorite: map['isFavorite'],
   );
 
 }
