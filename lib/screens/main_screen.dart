@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../screens/home-screen.dart';
 import '../widget/outfit_widget.dart';
 
 class MainScreen extends StatefulWidget {
@@ -12,7 +13,9 @@ class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
 
   // Lista de pantallas para navegar
-  final List<Widget> _pages = [];
+  final List<Widget> _pages = [
+    HomeScreen(),
+  ];
 
   @override
   Widget build(BuildContext context) {
