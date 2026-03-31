@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'screens/main_screen.dart';
 
+
 void main() {
   runApp(
       const StyleStack(),
@@ -12,6 +13,7 @@ class StyleStack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       title: 'StyleStack',
       debugShowCheckedModeBanner: false,
