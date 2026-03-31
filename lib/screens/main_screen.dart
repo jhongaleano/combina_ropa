@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import '../screens/home-screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -13,7 +13,7 @@ class _MainScreenState extends State<MainScreen> {
 
   // Lista de pantallas para navegar
   final List<Widget> _pages = [
-    
+    HomeScreen(),
   ];
 
   @override
