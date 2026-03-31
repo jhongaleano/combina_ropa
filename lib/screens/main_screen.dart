@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../screens/home-screen.dart';
 import '../widget/outfit_widget.dart';
 
-
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
