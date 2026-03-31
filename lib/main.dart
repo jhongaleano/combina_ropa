@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import './widget/outfit_widget.dart';
 
 void main() {
   runApp(const MainApp());
@@ -10,11 +11,10 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
+      title: 'Combina tu ropa',
+      debugShowCheckedModeBanner: false,
+
+      home: OutfitWidget(),
     );
   }
 }
