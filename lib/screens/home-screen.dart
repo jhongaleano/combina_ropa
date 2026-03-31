@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../models/models_api.dart'; 
 import '../service/service.dart';
+import '../providers/category_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,15 +13,59 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final ProductService _apiService = ProductService();
 
-  final List<Map<String, dynamic>> categories = [
-    {"title": "T-shirts", "icon": Icons.checkroom},
-    {"title": "Sneakers", "icon": Icons.do_not_step},
-    {"title": "Jackets", "icon": Icons.dry_cleaning},
-    {"title": "Accessories", "icon": Icons.work},
-  ];
+  void _mostrarAgregarCategoriaDialogo(BuildContext context) {
+    final TextEditingController controller = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFF2D2636),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text(
+          "Nueva Categoría",
+          style: TextStyle(color: Colors.white),
+        ),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          style: const TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+            hintText: "Ej: Ropa de Invierno",
+            hintStyle: TextStyle(color: Colors.white.withOpacity(0.3)),
+            enabledBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.purpleAccent),
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text(
+              "Cancelar",
+              style: TextStyle(color: Colors.white70),
+            ),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.purpleAccent,
+            ),
+            onPressed: () {
+              if (controller.text.isNotEmpty) {
+
+                context.read<CategoryProvider>().agregarCategoria(controller.text);
+                Navigator.pop(context);
+              }
+            },
+            child: const Text("Guardar"),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    final categoriasDinamicas = context.watch<CategoryProvider>().categoria;
     return Scaffold(
       backgroundColor: const Color(0xFF1E1B24),
       body: SingleChildScrollView(
@@ -129,7 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisSpacing: 15,
                 mainAxisSpacing: 15,
               ),
-              itemCount: categories.length,
+              itemCount: categoriasDinamicas.length,
               itemBuilder: (context, index) {
                 return Container(
                   decoration: BoxDecoration(
@@ -143,14 +189,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        categories[index]["icon"],
+                     const Icon(
+                        Icons.label_important_outline,
                         color: Colors.orangeAccent,
-                        size: 24,
+                        size: 20,
                       ),
                       const SizedBox(width: 10),
                       Text(
-                        categories[index]["title"],
+                        categoriasDinamicas[index],
                         style: const TextStyle(
                           color: Colors.white70,
                           fontSize: 16,
@@ -165,7 +211,7 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 20),
             
             TextButton(
-              onPressed: () {},
+              onPressed: () => _mostrarAgregarCategoriaDialogo(context),
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
