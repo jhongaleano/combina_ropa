@@ -33,7 +33,7 @@ class _OutfitWidgetState extends State<OutfitWidget> {
 
   Future<void> _loadOutfits() async {
     try {
-      final data = await MusicService().getProducto();
+      final data = await ProductService().getProductos();
       if (!mounted) return;
 
       setState(() {

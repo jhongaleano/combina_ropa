@@ -24,7 +24,7 @@ class StyleStack extends StatelessWidget {
       title: 'StyleStack',
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: const Color(0xFF23172d),
+        scaffoldBackgroundColor: const Color(0xFF241438),
       ),
       home: const MainScreen(),
     );
