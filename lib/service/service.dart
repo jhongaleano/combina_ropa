@@ -2,12 +2,11 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/models_api.dart';
 
-class MusicService {
+class ProductService {
   static const String _baseUrl = 'https://fakestoreapi.com/products';
 
-  Future<List<Producto>> getProducto() async {
-
-    final url = Uri.parse('$_baseUrl?}');
+  Future<List<Producto>> getProductos() async {
+    final url = Uri.parse(_baseUrl);
 
     try {
       final response = await http.get(url);
@@ -31,7 +30,13 @@ class MusicService {
         throw 'Error en la respuesta del servidor: ${response.statusCode}';
       }
     } catch (e) {
-      throw 'No se pudo conectar con la API, error: $e';
+      throw 'No se pudo conectar con la API de StyleStack: $e';
     }
+  }
+
+  Future<Producto> getSugerenciaAleatoria() async {
+    final productos = await getProductos();
+    productos.shuffle(); // desordenar la lista
+    return productos.first; // retornar el primero
   }
 }
