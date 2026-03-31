@@ -43,6 +43,8 @@ class WardrobeProvider extends ChangeNotifier {
       image: imagePath,
       isFavorite: false,
     );
+    print("Prenda Creada: ${newPrenda.name} en ${newPrenda.category}");
+    print("Ruta de imagen: ${newPrenda.image}");
     _prendas.add(newPrenda);
     _guardarPrendasEnDisco(); 
     notifyListeners();
