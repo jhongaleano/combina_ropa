@@ -9,6 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  gradient_borders: ^1.0.2
   http: ^1.6.0
   image_picker: ^1.2.1
   path_provider: ^2.1.5
