@@ -1,20 +1,26 @@
 import 'package:flutter/material.dart';
-import './widget/outfit_widget.dart';
+import 'package:provider/provider.dart';
+import 'screens/main_screen.dart';
+
 
 void main() {
-  runApp(const MainApp());
+  runApp(
+      const StyleStack(),
+  );
 }
-
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+class StyleStack extends StatelessWidget {
+  const StyleStack({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'Combina tu ropa',
-      debugShowCheckedModeBanner: false,
 
-      home: OutfitWidget(),
+    return MaterialApp(
+      title: 'StyleStack',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: const Color(0xFF23172d),
+      ),
+      home: const MainScreen(),
     );
   }
 }
