@@ -138,13 +138,13 @@ class _GarmentScreenState extends State<GarmentScreen> {
               ],
             ),
             if (_imagenSeleccionada != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: Text(
-                  "¡Imagen capturada!",
-                  style: TextStyle(color: Colors.greenAccent[100]),
-                ),
-              ),
+             // Padding(
+               // padding: const EdgeInsets.only(top: 2),
+                //child: Text(
+                //  "¡Imagen capturada!",
+                //  style: TextStyle(color: Colors.greenAccent[100]),
+                //),
+             // ),
             const SizedBox(height: 30),
             Container(
               alignment: Alignment.centerLeft,
