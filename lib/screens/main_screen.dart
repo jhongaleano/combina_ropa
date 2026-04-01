@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../screens/home-screen.dart';
 import '../widget/outfit_widget.dart';
 import 'package:combina_ropa/screens/garment_screens.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -14,15 +15,14 @@ class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
 
   // Lista de pantallas para navegar
-  final List<Widget> _pages = [
-    HomeScreen(),
-    GarmentScreen()
-
-  ];
+  final List<Widget> _pages = [HomeScreen(), GarmentScreen()];
 
   @override
   Widget build(BuildContext context) {
+    const activeColor = Color.fromARGB(255, 183, 38, 180);
+    const inactiveColor = Color.fromARGB(255, 82, 63, 91);
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 30, 20, 45),
       appBar: AppBar(
         toolbarHeight: 90,
         backgroundColor: const Color.fromARGB(255, 51, 37, 74),
@@ -30,13 +30,30 @@ class _MainScreenState extends State<MainScreen> {
           children: [
             Row(
               children: [
-                Icon(Icons.checkroom, size: 30),
+                Icon(Icons.layers, size: 30, color: Colors.white),
                 Text(
-                  "StyleStack",
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                  "StyleStack -",
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: GoogleFonts.playfairDisplay().fontFamily,
+                  ),
                 ),
                 SizedBox(width: 10),
-                Text("- Home"),
+                Text(
+                  _currentIndex == 0
+                      ? "Home"
+                      : _currentIndex == 1
+                      ? "Favoritos"
+                      : _currentIndex == 2
+                      ? "Agregar Prenda"
+                      : "Recomendaciones",
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w300,
+                    fontFamily: GoogleFonts.raleway().fontFamily,
+                  ),
+                ),
               ],
             ),
             SizedBox(height: 10),
@@ -46,13 +63,13 @@ class _MainScreenState extends State<MainScreen> {
                   borderRadius: BorderRadius.circular(100),
                   child: Image.network(
                     "https://imgs.search.brave.com/Zt0iPvoSENj43SyjOZQD4CPzonxOPfInlysGYnb9La8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvMTE3/OTQyMDM0My9lcy9m/b3RvL2hvbWJyZS1z/b25yaWVudGUtYWwt/YWlyZS1saWJyZS1l/bi1sYS1jaXVkYWQu/anBnP3M9NjEyeDYx/MiZ3PTAmaz0yMCZj/PW5fRVAwM1ItNEtt/SV9WZzJlVkQ0SGxL/RGpzLW5ONkc2Nm9Z/ZGRDVzFJelU9",
-                    width: 40,
-                    height: 40,
+                    width: 35,
+                    height: 34,
                     fit: BoxFit.cover,
                   ),
                 ),
                 const SizedBox(width: 10),
-                Text("Cristhian Padilla "),
+                const Text("Cristhian Padilla", style: TextStyle(fontSize: 14)),
               ],
             ),
           ],
@@ -64,22 +81,17 @@ class _MainScreenState extends State<MainScreen> {
             child: IndexedStack(index: _currentIndex, children: _pages),
           ),
 
-          Positioned(
-            left: 5,
-            right: 5,
-            bottom: 8,
-            child: const OutfitWidget(),
-          )
+          Positioned(left: 5, right: 5, bottom: 8, child: const OutfitWidget()),
         ],
       ),
       bottomNavigationBar: Container(
-        height: 90,
+        height: 87,
         decoration: BoxDecoration(
           color: const Color.fromARGB(255, 51, 37, 74),
           border: Border.all(color: const Color(0xFF4c4056), width: 2),
           borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(60),
-            bottomRight: Radius.circular(60),
+            bottomLeft: Radius.circular(30),
+            bottomRight: Radius.circular(30),
           ),
           boxShadow: [
             BoxShadow(
@@ -91,143 +103,56 @@ class _MainScreenState extends State<MainScreen> {
           ],
         ),
         child: BottomNavigationBar(
+          currentIndex: _currentIndex,
           type: BottomNavigationBarType.fixed,
           backgroundColor: Colors.transparent,
-          selectedItemColor: const Color.fromARGB(255, 183, 38, 180),
-          unselectedItemColor: const Color.fromARGB(255, 57, 54, 54),
+          selectedLabelStyle: GoogleFonts.montserrat(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
+          unselectedLabelStyle: GoogleFonts.montserrat(
+            fontSize: 11,
+            fontWeight: FontWeight.w400,
+          ),
+          selectedItemColor: activeColor,
+          unselectedItemColor: inactiveColor,
           onTap: (index) => setState(() => _currentIndex = index),
           items: [
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.home,
-                color: _currentIndex == 0
-                    ? const Color.fromARGB(255, 183, 38, 180)
-                    : const Color.fromARGB(255, 57, 54, 54),
-                size: 35,
-                shadows: _currentIndex == 0
-                    ? [
-                        Shadow(
-                          color: const Color.fromARGB(
-                            255,
-                            183,
-                            38,
-                            180,
-                          ).withValues(alpha: 0.8),
-                          blurRadius: 15.0,
-                        ),
-                        Shadow(
-                          color: const Color.fromARGB(
-                            255,
-                            183,
-                            38,
-                            180,
-                          ).withValues(alpha: 0.5),
-                          blurRadius: 30.0,
-                        ),
-                      ]
-                    : [],
-              ),
-              label: "Home",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.favorite,
-                color: _currentIndex == 1
-                    ? const Color.fromARGB(255, 183, 38, 180)
-                    : const Color.fromARGB(255, 57, 54, 54),
-                size: 35,
-                shadows: _currentIndex == 1
-                    ? [
-                        Shadow(
-                          color: const Color.fromARGB(
-                            255,
-                            183,
-                            38,
-                            180,
-                          ).withValues(alpha: 0.8),
-                          blurRadius: 15.0,
-                        ),
-                        Shadow(
-                          color: const Color.fromARGB(
-                            255,
-                            183,
-                            38,
-                            180,
-                          ).withValues(alpha: 0.5),
-                          blurRadius: 30.0,
-                        ),
-                      ]
-                    : [],
-              ),
-              label: "Favoritos",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.add,
-                color: _currentIndex == 2
-                    ? const Color.fromARGB(255, 183, 38, 180)
-                    : const Color.fromARGB(255, 57, 54, 54),
-                size: 35,
-                shadows: _currentIndex == 2
-                    ? [
-                        Shadow(
-                          color: const Color.fromARGB(
-                            255,
-                            183,
-                            38,
-                            180,
-                          ).withValues(alpha: 0.8),
-                          blurRadius: 15.0,
-                        ),
-                        Shadow(
-                          color: const Color.fromARGB(
-                            255,
-                            183,
-                            38,
-                            180,
-                          ).withValues(alpha: 0.5),
-                          blurRadius: 30.0,
-                        ),
-                      ]
-                    : [],
-              ),
-              label: "Agregar",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.recommend,
-                color: _currentIndex == 3
-                    ? const Color.fromARGB(255, 183, 38, 180)
-                    : const Color.fromARGB(255, 57, 54, 54),
-                size: 35,
-                shadows: _currentIndex == 3
-                    ? [
-                        Shadow(
-                          color: const Color.fromARGB(
-                            255,
-                            183,
-                            38,
-                            180,
-                          ).withValues(alpha: 0.8),
-                          blurRadius: 15.0,
-                        ),
-                        Shadow(
-                          color: const Color.fromARGB(
-                            255,
-                            183,
-                            38,
-                            180,
-                          ).withValues(alpha: 0.5),
-                          blurRadius: 30.0,
-                        ),
-                      ]
-                    : [],
-              ),
-              label: "Recomendaciones ",
-            ),
+            _buildNavItem(Icons.home, "Home", 0),
+            _buildNavItem(Icons.favorite, "Favoritos", 1),
+            _buildNavItem(Icons.add, "Agregar", 2),
+            _buildNavItem(Icons.auto_awesome, "Recomendaciones", 3),
           ],
         ),
       ),
+    );
+  }
+
+  BottomNavigationBarItem _buildNavItem(
+    IconData icon,
+    String label,
+    int index,
+  ) {
+    bool isActive = _currentIndex == index;
+    return BottomNavigationBarItem(
+      icon: Icon(
+        icon,
+        size: 35,
+        shadows: isActive
+            ? [
+                Shadow(
+                  color: const Color.fromARGB(
+                    255,
+                    183,
+                    38,
+                    180,
+                  ).withValues(alpha: 0.8),
+                  blurRadius: 15,
+                ),
+              ]
+            : [],
+      ),
+      label: label,
     );
   }
 }
