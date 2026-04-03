@@ -1,8 +1,11 @@
+import 'dart:io';
+import 'package:combina_ropa/models/models_camera.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/models_api.dart'; 
 import '../service/service.dart';
 import '../providers/category_provider.dart';
+import '../providers/Wardrobe_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -69,6 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFF1E1B24),
       body: SingleChildScrollView(
+        physics: const ClampingScrollPhysics(),
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,8 +133,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           borderRadius: BorderRadius.circular(20),
                           child: Image.network(
                             producto.image,
-                            fit: BoxFit.contain,
-                          ),
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return const Icon(Icons.image_not_supported, color: Colors.white54);
+                            },
+                          )
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -166,48 +173,115 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 16),
             
-            GridView.builder(
+            ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 2.5,
-                crossAxisSpacing: 15,
-                mainAxisSpacing: 15,
-              ),
               itemCount: categoriasDinamicas.length,
               itemBuilder: (context, index) {
+                final categoriaNombre = categoriasDinamicas[index];
+                
+                final prendasDeCategoria = context.watch<WardrobeProvider>().prendas
+                    .where((p) => p.category == categoriaNombre)
+                    .toList();
+            
                 return Container(
+                  margin: const EdgeInsets.only(bottom: 10),
                   decoration: BoxDecoration(
                     color: const Color(0xFF2D2636),
                     borderRadius: BorderRadius.circular(15),
-                    border: Border.all(
-                      color: const Color(0xFF4c4056),
-                      width: 1.5,
-                    ),
+                    border: Border.all(color: const Color(0xFF4c4056), width: 1.5),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  child: ExpansionTile(
+                    leading: const Icon(Icons.label_important_outline, color: Colors.orangeAccent),
+                    trailing: const Icon(Icons.keyboard_arrow_down, color: Colors.white70),
+                    title: Text(categoriaNombre, style: const TextStyle(color: Colors.white)),
                     children: [
-                     const Icon(
-                        Icons.label_important_outline,
-                        color: Colors.orangeAccent,
-                        size: 20,
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                        categoriasDinamicas[index],
-                        style: const TextStyle(
-                          color: Colors.white70,
-                          fontSize: 16,
+                      if (prendasDeCategoria.isEmpty)
+                        const Padding(
+                          padding: EdgeInsets.all(20.0),
+                          child: Text(
+                            "No hay fotos en esta categoría",
+                            style: TextStyle(color: Colors.white54),
+                          ),
+                        )
+                      else
+                        Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Column(
+                            children: prendasDeCategoria.map((prenda) {
+                              return Container(
+                                margin: const EdgeInsets.only(bottom: 15),
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: const Color.fromRGBO(87, 82, 92,1),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(15),
+                                      child: Image.file(
+                                        File(prenda.image),
+                                        width: 90,
+                                        height: 90,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 15),
+
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            prenda.name,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          const SizedBox(height: 10),
+
+                                          Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: InkWell(
+                                              onTap: () {
+                                                context.read<WardrobeProvider>().toggleFavorite(prenda.id);
+                                              },
+                                              child: Container(
+                                                padding: const EdgeInsets.all(8),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: Icon(
+                                                  prenda.isFavorite ? Icons.favorite : Icons.favorite_border,
+                                                  color: prenda.isFavorite ? Colors.redAccent : Colors.white70,
+                                                  size: 24,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }).toList(), // convertir el mapa de prendas en una lista de widgets
+                          ),
                         ),
-                      ),
                     ],
+                  
                   ),
                 );
               },
             ),
-            
             const SizedBox(height: 20),
             
             TextButton(

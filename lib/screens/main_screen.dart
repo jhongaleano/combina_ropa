@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../screens/home-screen.dart';
 import '../widget/outfit_widget.dart';
+import '../screens/favorite-screen.dart';
 import 'package:combina_ropa/screens/garment_screens.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -15,7 +16,7 @@ class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
 
   // Lista de pantallas para navegar
-  final List<Widget> _pages = [HomeScreen(), GarmentScreen()];
+  final List<Widget> _pages = [HomeScreen(), FavoriteScreen() ,GarmentScreen()];
 
   @override
   Widget build(BuildContext context) {
@@ -78,10 +79,18 @@ class _MainScreenState extends State<MainScreen> {
       body: Stack(
         children: [
           Positioned.fill(
-            child: IndexedStack(index: _currentIndex, children: _pages),
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 110),
+              child: IndexedStack(index: _currentIndex, children: _pages),
+            )
           ),
 
-          Positioned(left: 5, right: 5, bottom: 8, child: const OutfitWidget()),
+          Positioned(
+            left: 10, 
+            right: 10, 
+            bottom: 15, 
+            child: const OutfitWidget()
+          ),
         ],
       ),
       bottomNavigationBar: Container(
