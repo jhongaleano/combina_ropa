@@ -55,7 +55,7 @@ class WardrobeProvider extends ChangeNotifier {
     if (index != -1) {
       _prendas[index].isFavorite = !_prendas[index].isFavorite;
       if (await Vibration.hasVibrator() ?? false) {
-        Vibration.vibrate(duration: 50);
+        Vibration.vibrate(duration: 100, amplitude: 500);
       }
 
       _guardarPrendasEnDisco();

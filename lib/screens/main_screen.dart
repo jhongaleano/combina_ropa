@@ -63,7 +63,7 @@ class _MainScreenState extends State<MainScreen> {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(100),
                   child: Image.network(
-                    "https://imgs.search.brave.com/Zt0iPvoSENj43SyjOZQD4CPzonxOPfInlysGYnb9La8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvMTE3/OTQyMDM0My9lcy9m/b3RvL2hvbWJyZS1z/b25yaWVudGUtYWwt/YWlyZS1saWJyZS1l/bi1sYS1jaXVkYWQu/anBnP3M9NjEyeDYx/MiZ3PTAmaz0yMCZj/PW5fRVAwM1ItNEtt/SV9WZzJlVkQ0SGxL/RGpzLW5ONkc2Nm9Z/ZGRDVzFJelU9",
+                    "https://static.wikia.nocookie.net/peanuts/images/b/b7/Modern_Snoopy_in_a_nutshell.jpg/revision/latest/scale-to-width/360?cb=20241020133255",
                     width: 35,
                     height: 34,
                     fit: BoxFit.cover,

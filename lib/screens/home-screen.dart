@@ -1,18 +1,19 @@
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:combina_ropa/models/models_camera.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/models_api.dart'; 
+import '../models/models_api.dart';
 import '../service/service.dart';
 import '../providers/category_provider.dart';
 import '../providers/Wardrobe_provider.dart';
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
+
 class _HomeScreenState extends State<HomeScreen> {
   final ProductService _apiService = ProductService();
 
@@ -54,8 +55,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             onPressed: () {
               if (controller.text.isNotEmpty) {
-
-                context.read<CategoryProvider>().agregarCategoria(controller.text);
+                context.read<CategoryProvider>().agregarCategoria(
+                  controller.text,
+                );
                 Navigator.pop(context);
               }
             },
@@ -78,92 +80,6 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              "Outfit Reciente",
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            FutureBuilder<List<Producto>>(
-              future: _apiService.getProductos(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(
-                    child: Text(
-                      "Error: ${snapshot.error}",
-                      style: const TextStyle(color: Colors.red),
-                    ),
-                  );
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text("No hay datos disponibles"));
-                }
-
-                final producto = snapshot.data!.first;
-
-                return Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF2D2636),
-                    borderRadius: BorderRadius.circular(25),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.purple,
-                        blurRadius: 15,
-                        spreadRadius: 2,
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: double.infinity,
-                        height: 200,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: Image.network(
-                            producto.image,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return const Icon(Icons.image_not_supported, color: Colors.white54);
-                            },
-                          )
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        producto.title,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Text(
-                        "\$${producto.price}",
-                        style: const TextStyle(color: Colors.white70, fontSize: 14),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-
-            const SizedBox(height: 35),
-
-            const Text(
               "Categorias",
               style: TextStyle(
                 fontSize: 22,
@@ -172,29 +88,60 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             const SizedBox(height: 16),
-            
+
+            TextButton(
+              onPressed: () => _mostrarAgregarCategoriaDialogo(context),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.add, color: Colors.purpleAccent),
+                  SizedBox(width: 5),
+                  Text(
+                    "Agrega una nueva categoria",
+                    style: TextStyle(color: Colors.purpleAccent),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 15,),
+
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: categoriasDinamicas.length,
               itemBuilder: (context, index) {
                 final categoriaNombre = categoriasDinamicas[index];
-                
-                final prendasDeCategoria = context.watch<WardrobeProvider>().prendas
+
+                final prendasDeCategoria = context
+                    .watch<WardrobeProvider>()
+                    .prendas
                     .where((p) => p.category == categoriaNombre)
                     .toList();
-            
+
                 return Container(
                   margin: const EdgeInsets.only(bottom: 10),
                   decoration: BoxDecoration(
                     color: const Color(0xFF2D2636),
                     borderRadius: BorderRadius.circular(15),
-                    border: Border.all(color: const Color(0xFF4c4056), width: 1.5),
+                    border: Border.all(
+                      color: const Color(0xFF4c4056),
+                      width: 1.5,
+                    ),
                   ),
                   child: ExpansionTile(
-                    leading: const Icon(Icons.label_important_outline, color: Colors.orangeAccent),
-                    trailing: const Icon(Icons.keyboard_arrow_down, color: Colors.white70),
-                    title: Text(categoriaNombre, style: const TextStyle(color: Colors.white)),
+                    leading: const Icon(
+                      Icons.label_important_outline,
+                      color: Colors.orangeAccent,
+                    ),
+                    trailing: const Icon(
+                      Icons.keyboard_arrow_down,
+                      color: Colors.white70,
+                    ),
+                    title: Text(
+                      categoriaNombre,
+                      style: const TextStyle(color: Colors.white),
+                    ),
                     children: [
                       if (prendasDeCategoria.isEmpty)
                         const Padding(
@@ -213,7 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 margin: const EdgeInsets.only(bottom: 15),
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
-                                  color: const Color.fromRGBO(87, 82, 92,1),
+                                  color: const Color.fromRGBO(87, 82, 92, 1),
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Row(
@@ -232,13 +179,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
                                     Expanded(
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           Text(
                                             prenda.name,
                                             style: const TextStyle(
-                                              color: Colors.white,
+                                              color:Color.fromARGB(255, 255, 255, 255),
                                               fontSize: 16,
                                               fontWeight: FontWeight.w500,
                                             ),
@@ -249,22 +198,49 @@ class _HomeScreenState extends State<HomeScreen> {
 
                                           Align(
                                             alignment: Alignment.centerLeft,
-                                            child: InkWell(
-                                              onTap: () {
-                                                context.read<WardrobeProvider>().toggleFavorite(prenda.id);
-                                              },
-                                              child: Container(
-                                                padding: const EdgeInsets.all(8),
-                                                decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  shape: BoxShape.circle,
+                                            child: Row(
+                                              children: [
+                                                InkWell(
+                                                  onTap: () {
+                                                    context.read<WardrobeProvider>().toggleFavorite(prenda.id,);
+                                                  },
+                                                  child: Container(
+                                                    padding:
+                                                        const EdgeInsets.all(8),
+                                                    decoration: BoxDecoration(
+                                                      color: const Color.fromARGB(255, 84, 0, 0),
+                                                      shape: BoxShape.circle,
+                                                    ),
+                                                    child: Icon(
+                                                      prenda.isFavorite
+                                                          ? Icons.favorite
+                                                          : Icons.favorite_border,
+                                                      color: prenda.isFavorite
+                                                          ? const Color.fromARGB(255, 251, 251, 251)
+                                                          : Colors.white70,
+                                                      size: 24,
+                                                    ),
+                                                  ),
                                                 ),
-                                                child: Icon(
-                                                  prenda.isFavorite ? Icons.favorite : Icons.favorite_border,
-                                                  color: prenda.isFavorite ? Colors.redAccent : Colors.white70,
-                                                  size: 24,
+                                                const SizedBox(width: 15,),
+                                                InkWell(
+                                                  onTap: () {
+                                                    context.read<WardrobeProvider>().eliminarPrenda(prenda.id,);
+                                                  },
+                                                  child: Container(
+                                                    padding:
+                                                        const EdgeInsets.all(8),
+                                                    decoration: BoxDecoration(
+                                                      color:  const Color.fromARGB(255, 84, 0, 0),
+                                                      shape: BoxShape.circle,
+                                                    ),
+                                                    child: Icon(
+                                                      Icons.delete,
+                                                      size: 24,
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
+                                              ],
                                             ),
                                           ),
                                         ],
@@ -277,26 +253,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                     ],
-                  
                   ),
                 );
               },
-            ),
-            const SizedBox(height: 20),
-            
-            TextButton(
-              onPressed: () => _mostrarAgregarCategoriaDialogo(context),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.add, color: Colors.purpleAccent),
-                  SizedBox(width: 5),
-                  Text(
-                    "Agrega una nueva categoria",
-                    style: TextStyle(color: Colors.purpleAccent),
-                  ),
-                ],
-              ),
             ),
           ],
         ),

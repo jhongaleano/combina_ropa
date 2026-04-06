@@ -22,43 +22,10 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
 
     return Scaffold(
       backgroundColor: const Color(0xFF1B1721), 
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Text(
-          "Favoritos", 
-          style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.search, color: Colors.white70),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-            child: ElevatedButton.icon(
-              onPressed: () {
-              },
-              icon: const Icon(Icons.add, size: 18, color: Colors.black),
-              label: const Text(
-                "Agregar un nuevo outfit",
-                style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-              ),
-            ),
-          ),
-        ],
-      ),
       body: listaFavoritos.isEmpty 
         ? const Center(
             child: Text(
-              "No tienes favoritos aún", 
+              "No tienes favoritos aun", 
               style: TextStyle(color: Colors.white54)
             )
           )
