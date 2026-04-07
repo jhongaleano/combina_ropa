@@ -14,14 +14,22 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
-
+  final PageController _pageController = PageController();
   // Lista de pantallas para navegar
-  final List<Widget> _pages = [HomeScreen(), FavoriteScreen() ,GarmentScreen()];
+  final List<Widget> _pages = [HomeScreen(), FavoriteScreen(), GarmentScreen()];
 
   @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+
   Widget build(BuildContext context) {
-    const activeColor = Color.fromARGB(255, 183, 38, 180);
+    const activeColor = Color.fromRGBO(200, 140, 255, 1);
     const inactiveColor = Color.fromARGB(255, 82, 63, 91);
+
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 30, 20, 45),
       appBar: AppBar(
@@ -81,15 +89,21 @@ class _MainScreenState extends State<MainScreen> {
           Positioned.fill(
             child: Padding(
               padding: const EdgeInsets.only(bottom: 110),
-              child: IndexedStack(index: _currentIndex, children: _pages),
-            )
-          ),
+              child: PageView(
+                controller: _pageController,
+                onPageChanged: (index) {
+                  setState(() => _currentIndex = index);
+                },
+                children: _pages,
+              ),
+            ),
+        ),
 
           Positioned(
-            left: 10, 
-            right: 10, 
-            bottom: 15, 
-            child: const OutfitWidget()
+            left: 10,
+            right: 10,
+            bottom: 15,
+            child: const OutfitWidget(),
           ),
         ],
       ),
@@ -99,8 +113,8 @@ class _MainScreenState extends State<MainScreen> {
           color: const Color.fromARGB(255, 51, 37, 74),
           border: Border.all(color: const Color(0xFF4c4056), width: 2),
           borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(30),
-            bottomRight: Radius.circular(30),
+          bottomLeft: Radius.circular(30),
+          bottomRight: Radius.circular(30),
           ),
           boxShadow: [
             BoxShadow(
@@ -112,20 +126,29 @@ class _MainScreenState extends State<MainScreen> {
           ],
         ),
         child: BottomNavigationBar(
-          currentIndex: _currentIndex,
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: Colors.transparent,
-          selectedLabelStyle: GoogleFonts.montserrat(
+            currentIndex: _currentIndex,
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: Colors.transparent,
+            selectedLabelStyle: GoogleFonts.montserrat(
             fontSize: 14,
             fontWeight: FontWeight.w600,
           ),
+
           unselectedLabelStyle: GoogleFonts.montserrat(
             fontSize: 11,
             fontWeight: FontWeight.w400,
           ),
+
           selectedItemColor: activeColor,
           unselectedItemColor: inactiveColor,
-          onTap: (index) => setState(() => _currentIndex = index),
+          onTap: (index) {
+            setState(() => _currentIndex = index);
+            _pageController.animateToPage(
+              index,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOut,
+            );
+          },
           items: [
             _buildNavItem(Icons.home, "Home", 0),
             _buildNavItem(Icons.favorite, "Favoritos", 1),
@@ -148,18 +171,13 @@ class _MainScreenState extends State<MainScreen> {
         icon,
         size: 35,
         shadows: isActive
-            ? [
-                Shadow(
-                  color: const Color.fromARGB(
-                    255,
-                    183,
-                    38,
-                    180,
-                  ).withValues(alpha: 0.8),
-                  blurRadius: 15,
-                ),
-              ]
-            : [],
+          ? [
+              Shadow(
+                color: const Color.fromARGB(255,183,38,180,).withValues(alpha: 0.8),
+                blurRadius: 15,
+              ),
+            ]
+          : [],
       ),
       label: label,
     );
