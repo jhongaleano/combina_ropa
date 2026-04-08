@@ -16,13 +16,13 @@ class OutfitWidget extends StatefulWidget {
 }
 
 class _OutfitWidgetState extends State<OutfitWidget> {
+  List<ModelsCamera> _picksporcategoria = [];
   final Random _random = Random();
   StreamSubscription<AccelerometerEvent>? _accelSub;
-  
+
   WardrobeProvider? _wardrobeProvider;
 
   ModelsCamera? _current;
-  
 
   DateTime _lastShake = DateTime.fromMillisecondsSinceEpoch(0);
 
@@ -32,39 +32,59 @@ class _OutfitWidgetState extends State<OutfitWidget> {
     _startShakeDetection();
   }
 
- @override
- void didChangeDependencies() {
-  super.didChangeDependencies();
-  final wardrobe = context.read<WardrobeProvider>();
-  if(_wardrobeProvider != wardrobe) {
-    _wardrobeProvider?.removeListener(_onWardrobeChanged);
-    _wardrobeProvider = wardrobe;
-    wardrobe.addListener(_onWardrobeChanged);
-    _onWardrobeChanged();
- }
-}
-
-void _onWardrobeChanged() {
-  if(!mounted) return;
-  final wardrobe = _wardrobeProvider?.prendas ?? [];
-  if(wardrobe.isEmpty) {
-   setState(()=> _current = null);
-   return;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final wardrobe = context.read<WardrobeProvider>();
+    if (_wardrobeProvider != wardrobe) {
+      _wardrobeProvider?.removeListener(_onWardrobeChanged);
+      _wardrobeProvider = wardrobe;
+      wardrobe.addListener(_onWardrobeChanged);
+      _onWardrobeChanged();
+    }
   }
 
-  final stillValid = _current != null && wardrobe.any((p) => p.id == _current?.id);
-  if(!stillValid) {
-    setState(()=> _current = wardrobe[_random.nextInt(wardrobe.length)]);
+  List<ModelsCamera> _oneRamdomCategoria(List<ModelsCamera> prendas) {
+    final Map<String, List<ModelsCamera>> categorias = {};
+    for (final p in prendas) {
+      final key = p.category.trim().isEmpty
+          ? 'Sin categoria'
+          : p.category.trim();
+      categorias.putIfAbsent(key, () => []).add(p);
+    }
+    final List<ModelsCamera> picks = [];
+    categorias.forEach((_, items) {
+      picks.add(items[_random.nextInt(items.length)]);
+    });
+    return picks;
   }
-}
+
+  void _onWardrobeChanged() {
+    if (!mounted) return;
+
+    final wardrobe = _wardrobeProvider?.prendas ?? [];
+    if (wardrobe.isEmpty) {
+      setState(() {
+        _current = null;
+        _picksporcategoria = [];
+      });
+      return;
+    }
+
+    setState(() {
+      _picksporcategoria = _oneRamdomCategoria(wardrobe);
+      _current = _picksporcategoria[_random.nextInt(_picksporcategoria.length)];
+    });
+  }
 
   void _startShakeDetection() {
     const double shakeThreshold = 15.0;
     const int cooldownMs = 800;
 
     _accelSub = accelerometerEventStream().listen((event) {
-      final magnitude =
-          sqrt(event.x * event.x + event.y * event.y + event.z * event.z);
+      final magnitude = sqrt(
+        event.x * event.x + event.y * event.y + event.z * event.z,
+      );
 
       final now = DateTime.now();
       final enoughTimePassed =
@@ -79,16 +99,11 @@ void _onWardrobeChanged() {
 
   void _changeOutfitRandom() {
     final outfits = context.read<WardrobeProvider>().prendas;
-    if (outfits.isEmpty) return;
-    if(!mounted) return;
+    if (outfits.isEmpty || !mounted) return;
 
     setState(() {
-      ModelsCamera next;
-      do {
-        next = outfits[_random.nextInt(outfits.length)];
-      } while (outfits.length > 1 && next.id == _current?.id);
-
-      _current = next;
+      _picksporcategoria = _oneRamdomCategoria(outfits);
+      _current = _picksporcategoria[_random.nextInt(_picksporcategoria.length)];
     });
   }
 
@@ -103,8 +118,8 @@ void _onWardrobeChanged() {
   }
 
   static ImageProvider _imageProvider(String path) {
-    if(path.startsWith('http://') || path.startsWith('https://')) {
-     return NetworkImage(path);
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return NetworkImage(path);
     }
     return FileImage(File(path));
   }
@@ -124,71 +139,86 @@ void _onWardrobeChanged() {
       return _buildContainer(child: const Text('Agrega prendas a tu armario'));
     }
 
-    final prenda = _current!;
-    final titulo = prenda.name.trim().isEmpty ? 'Sin titulo' : prenda.name;
-    final categoria = prenda.category.trim().isEmpty
-        ? 'Tu armario'
-        : prenda.category;
+    if (_picksporcategoria.isEmpty) {
+      return _buildContainer(
+        child: const Text(
+          'Agrega prendas a tu armario',
+          style: TextStyle(color: Colors.white),
+        ),
+      );
+    }
 
     return _buildContainer(
-      child: Row(
-        children: [
-          Hero(
-            tag: 'outfit_tag_${prenda.id}',
-            child: CircleAvatar(
-              radius: 35,
-              backgroundColor: Colors.white,
-              backgroundImage: _imageProvider(prenda.image),
-              onBackgroundImageError: (_, __) {},
-              child: prenda.image.isEmpty
-                  ? const Icon(Icons.style, size: 36, color: Color(0xFF28283C))
-                  : null,
-            ),
-          ),  
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  categoria,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Color(0xFFFF708D),
-                    fontSize: 11,
-                    fontWeight: FontWeight.w500,
-                    letterSpacing: 0.4,
+      child: SizedBox(
+        height: 90,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          itemCount: _picksporcategoria.length,
+          separatorBuilder: (_, __) => const SizedBox(width: 10),
+          itemBuilder: (context, index) {
+            final prenda = _picksporcategoria[index];
+            return GestureDetector(
+              onTap: () {
+                setState(() {
+                  _current = prenda;
+                });
+                _openDetail(context);
+              },
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Hero(
+                    tag: 'outfit_tag_${prenda.id}',
+                    child: Container(
+                    padding: const EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        gradient: const LinearGradient(
+                          colors: [Colors.cyan, Colors.purple, Colors.orange],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(17),
+                        child: Image(
+                          image: _imageProvider(prenda.image),
+                          height: 75,
+                          width: 82,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Container(
+                            height: 86,
+                            width: 86,
+                            color: Colors.white,
+                            child: const Center(
+                              child: Icon(
+                                Icons.style,
+                                size: 40,
+                                color: Color(0xFF28283C),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    //),
                   ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  titulo,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
+                  const SizedBox(height: 5),
+                  Text(
+                    prenda.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 8.2,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.casino, size: 24),
-            color: const Color(0xFFC88CFF),
-            tooltip: 'Cambiar outfit',
-            onPressed: _changeOutfitRandom,
-          ),
-          IconButton(
-            icon: const Icon(Icons.open_in_full, size: 24),
-            color: const Color(0xFFC88CFF),
-            tooltip: 'Ver detalle',
-            onPressed: () => _openDetail(context),
-          ),
-        ],
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -200,6 +230,10 @@ void _onWardrobeChanged() {
       decoration: BoxDecoration(
         color: const Color(0xFF1C1C2D),
         borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.1),
+          width: 1,
+        ),
       ),
       child: child,
     );
@@ -216,46 +250,50 @@ class OutfitDetailSheet extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-            Hero(
-              tag: 'outfit_tag_${prenda.id}',
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: Image.file(
-                  File(prenda.image),
+          Hero(
+            tag: 'outfit_tag_${prenda.id}',
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Image.file(
+                File(prenda.image),
+                height: 240,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => Container(
                   height: 240,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => Container(
-                    height: 240,
-                    color: Colors.white,
-                    child: const Center(
-                      child: Icon(Icons.style, size: 80, color: Color(0xFF28283C)),
+                  color: Colors.white,
+                  child: const Center(
+                    child: Icon(
+                      Icons.style,
+                      size: 80,
+                      color: Color.fromARGB(255, 243, 243, 250),
                     ),
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 16),
-            Text(
-              prenda.name,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 21,
-                fontWeight: FontWeight.bold,
-              ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            prenda.name,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 21,
+              fontWeight: FontWeight.bold,
             ),
-            const SizedBox(height: 8),
-            Text(
-              prenda.category,
-              style: const TextStyle(
-                color: Color(0xFFFF708D),
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            prenda.category,
+            style: const TextStyle(
+              color: Color(0xFFFF708D),
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
             ),
-            const SizedBox(height: 10),
-          ],
-        ),
-      );
+          ),
+          const SizedBox(height: 10),
+        ],
+      ),
+    );
   }
 }
