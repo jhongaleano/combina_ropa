@@ -1,21 +1,14 @@
 import 'dart:io';
-import 'package:flutter/cupertino.dart';
-import 'package:combina_ropa/models/models_camera.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/models_api.dart';
-import '../service/service.dart';
 import '../providers/category_provider.dart';
 import '../providers/Wardrobe_provider.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
-
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
-
 class _HomeScreenState extends State<HomeScreen> {
-  final ProductService _apiService = ProductService();
 
   void _mostrarAgregarCategoriaDialogo(BuildContext context) {
     final TextEditingController controller = TextEditingController();
@@ -27,7 +20,10 @@ class _HomeScreenState extends State<HomeScreen> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: const Text(
           "Nueva Categoría",
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(
+            color: Color(0xFF00BCD5),
+            fontWeight: FontWeight.bold,
+          ),
         ),
         content: TextField(
           controller: controller,
@@ -35,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
           style: const TextStyle(color: Colors.white),
           decoration: InputDecoration(
             hintText: "Ej: Ropa de Invierno",
-            hintStyle: TextStyle(color: Colors.white.withOpacity(0.3)),
+            hintStyle: TextStyle(color: Colors.white),
             enabledBorder: const UnderlineInputBorder(
               borderSide: BorderSide(color: Colors.purpleAccent),
             ),
@@ -46,12 +42,12 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () => Navigator.pop(context),
             child: const Text(
               "Cancelar",
-              style: TextStyle(color: Colors.white70),
+              style: TextStyle(color: Color(0xFFF0DBFF)),
             ),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.purpleAccent,
+              backgroundColor: Color.fromRGBO(200, 140, 255, 1),
             ),
             onPressed: () {
               if (controller.text.isNotEmpty) {
@@ -61,7 +57,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 Navigator.pop(context);
               }
             },
-            child: const Text("Guardar"),
+            child: const Text(
+              "Guardar",
+              style: TextStyle(
+                color: Color(0xFF62259B),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ],
       ),
@@ -72,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final categoriasDinamicas = context.watch<CategoryProvider>().categoria;
     return Scaffold(
-      backgroundColor: const Color(0xFF1E1B24),
+      backgroundColor: const Color(0xFF141123),
       body: SingleChildScrollView(
         physics: const ClampingScrollPhysics(),
         padding: const EdgeInsets.all(16.0),
@@ -82,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
             const Text(
               "Categorias",
               style: TextStyle(
-                fontSize: 22,
+                fontSize: 25,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
@@ -98,7 +100,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   SizedBox(width: 5),
                   Text(
                     "Agrega una nueva categoria",
-                    style: TextStyle(color: Colors.purpleAccent),
+                    style: TextStyle(
+                      color: Colors.purpleAccent,
+                      fontSize: 18,
+                    ),
                   ),
                 ],
               ),
@@ -113,25 +118,22 @@ class _HomeScreenState extends State<HomeScreen> {
               itemBuilder: (context, index) {
                 final categoriaNombre = categoriasDinamicas[index];
 
-                final prendasDeCategoria = context
-                    .watch<WardrobeProvider>()
-                    .prendas
-                    .where((p) => p.category == categoriaNombre)
-                    .toList();
+                final prendasDeCategoria = context.watch<WardrobeProvider>().prendas.where((p) => p.category == categoriaNombre).toList();
 
                 return Container(
-                  margin: const EdgeInsets.only(bottom: 10),
+                  margin: const EdgeInsets.only(bottom: 20),
                   decoration: BoxDecoration(
                     color: const Color(0xFF2D2636),
                     borderRadius: BorderRadius.circular(15),
                     border: Border.all(
-                      color: const Color(0xFF4c4056),
-                      width: 1.5,
+                      color: const Color(0xFF22D3EE),
+                      width: 2,
                     ),
                   ),
                   child: ExpansionTile(
+                    childrenPadding: EdgeInsets.all(20),
                     leading: const Icon(
-                      Icons.label_important_outline,
+                      Icons.checkroom,
                       color: Colors.orangeAccent,
                     ),
                     trailing: const Icon(
@@ -140,7 +142,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     title: Text(
                       categoriaNombre,
-                      style: const TextStyle(color: Colors.white),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                      ),
+                    ),
+                    subtitle: Text(
+                      "${prendasDeCategoria.length} ${prendasDeCategoria.length == 1 ? 'prenda disponible' : 'prendas disponibles'}",
+                      style: TextStyle(
+                        color: Colors.white70
+                      ),
                     ),
                     children: [
                       if (prendasDeCategoria.isEmpty)
@@ -153,11 +164,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         )
                       else
                         Padding(
-                          padding: const EdgeInsets.all(12.0),
+                          padding: const EdgeInsets.all(15),
                           child: Column(
                             children: prendasDeCategoria.map((prenda) {
                               return Container(
-                                margin: const EdgeInsets.only(bottom: 15),
+                                margin: const EdgeInsets.only(bottom: 10),
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
                                   color: const Color.fromRGBO(87, 82, 92, 1),
@@ -170,8 +181,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                       borderRadius: BorderRadius.circular(15),
                                       child: Image.file(
                                         File(prenda.image),
-                                        width: 90,
-                                        height: 90,
+                                        width: 100,
+                                        height: 100,
                                         fit: BoxFit.cover,
                                       ),
                                     ),
@@ -179,25 +190,21 @@ class _HomeScreenState extends State<HomeScreen> {
 
                                     Expanded(
                                       child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:CrossAxisAlignment.start,
+                                        mainAxisAlignment:MainAxisAlignment.center,
                                         children: [
                                           Text(
                                             prenda.name,
                                             style: const TextStyle(
                                               color:Color.fromARGB(255, 255, 255, 255),
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500,
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
                                             ),
                                             maxLines: 2,
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                           const SizedBox(height: 10),
-
                                           Align(
-                                            alignment: Alignment.centerLeft,
                                             child: Row(
                                               children: [
                                                 InkWell(
@@ -205,8 +212,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     context.read<WardrobeProvider>().toggleFavorite(prenda.id,);
                                                   },
                                                   child: Container(
-                                                    padding:
-                                                        const EdgeInsets.all(8),
+                                                    padding:const EdgeInsets.all(8),
                                                     decoration: BoxDecoration(
                                                       color: const Color.fromARGB(255, 84, 0, 0),
                                                       shape: BoxShape.circle,
@@ -228,8 +234,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     context.read<WardrobeProvider>().eliminarPrenda(prenda.id,);
                                                   },
                                                   child: Container(
-                                                    padding:
-                                                        const EdgeInsets.all(8),
+                                                    padding:const EdgeInsets.all(8),
                                                     decoration: BoxDecoration(
                                                       color:  const Color.fromARGB(255, 84, 0, 0),
                                                       shape: BoxShape.circle,
