@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
@@ -58,8 +56,7 @@ class _GarmentScreenState extends State<GarmentScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 30),
         child: Column(
           children: [
-            SizedBox(height: 15),
-
+            SizedBox(height: 25),
             Stack(
               alignment: Alignment.center,
               children: [
@@ -67,11 +64,13 @@ class _GarmentScreenState extends State<GarmentScreen> {
                   width: 220,
                   height: 220,
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.05),
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: const Color(0xFF9891a2).withValues(alpha: 0.12),
-                      width: 2,
+                    border: GradientBoxBorder(
+                      gradient: const LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [Color(0xFFFB923C), Color(0xFF22D3EE)],
+                      ), 
                     ),
                   ),
                   child: ClipRRect(
@@ -95,17 +94,12 @@ class _GarmentScreenState extends State<GarmentScreen> {
                       color: const Color.fromARGB(203, 133, 122, 125),
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: const Color(0xFFfaf9e8),
+                        color: const Color(0xFF5DE6FF),
                         width: 2,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color.fromARGB(
-                            255,
-                            144,
-                            92,
-                            184,
-                          ).withValues(alpha: 0.6),
+                          color: const Color.fromARGB(255, 253, 251, 254).withValues(alpha: 0.6),
                           blurRadius: 15,
                           spreadRadius: 2,
                         ),
@@ -119,7 +113,7 @@ class _GarmentScreenState extends State<GarmentScreen> {
                           color: Colors.white.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(50),
                           border: Border.all(
-                            color: const Color(0xFFfaf9e8),
+                            color: const Color(0xFFFB923C),
                             width: 2,
                           ),
                         ),
@@ -128,7 +122,7 @@ class _GarmentScreenState extends State<GarmentScreen> {
                           child: Icon(
                             Icons.camera_alt,
                             size: 30,
-                            color: const Color(0xFFcabb97),
+                            color: const Color(0xFF5DE6FF),
                           ),
                         ),
                       ),
@@ -137,6 +131,7 @@ class _GarmentScreenState extends State<GarmentScreen> {
                 ),
               ],
             ),
+            SizedBox(height: 25),
             if (_imagenSeleccionada != null)
              // Padding(
                // padding: const EdgeInsets.only(top: 2),
@@ -145,10 +140,10 @@ class _GarmentScreenState extends State<GarmentScreen> {
                 //  style: TextStyle(color: Colors.greenAccent[100]),
                 //),
              // ),
-            const SizedBox(height: 30),
+            SizedBox(height: 15,),
             Container(
               alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.only(left: 10, bottom: 8),
+              padding: const EdgeInsets.only(left: 10, bottom: 10),
               child: Text(
                 "Nombre de la prenda",
                 style: const TextStyle(
@@ -161,24 +156,24 @@ class _GarmentScreenState extends State<GarmentScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.1),
+                color: const Color(0xFF363246),
                 borderRadius: BorderRadius.circular(15),
-                border: const GradientBoxBorder(
-                  gradient: LinearGradient(
-                    colors: [Color(0xFFC49BF0), Color(0xFFFBE4AD)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  width: 1.5,
-                ),
+                // border: const GradientBoxBorder(
+                //   gradient: LinearGradient(
+                //     colors: [Color(0xFFC49BF0), Color(0xFFFBE4AD)],
+                //     begin: Alignment.topLeft,
+                //     end: Alignment.bottomRight,
+                //   ),
+                //   width: 1.5,
+                // ),
               ),
               child: TextField(
                 controller: _nombreControllador,
                 style: const TextStyle(color: Colors.white),
                 decoration: const InputDecoration(
                   hintText: "Ej: Camiseta Oversize" ,
-                  hintStyle:const TextStyle(
-                    color: Color(0xFFFBE4AD),
+                  hintStyle: TextStyle(
+                    color: Color.fromARGB(208, 250, 229, 179),
                     fontSize: 18,
                     fontWeight: FontWeight.w500,
                   ),
@@ -186,8 +181,7 @@ class _GarmentScreenState extends State<GarmentScreen> {
                 ),
               ),
             ),
-
-            const SizedBox(height: 20),
+            const SizedBox(height: 15),
             Container(
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.only(left: 10, bottom: 8),
@@ -203,16 +197,17 @@ class _GarmentScreenState extends State<GarmentScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.1),
+                color: Color(0xFF363246),
                 borderRadius: BorderRadius.circular(15),
-                border: const GradientBoxBorder(
-                  gradient: LinearGradient(
-                    colors: [Color(0xFFC49BF0), Color(0xFFFBE4AD)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  width: 1.5,
-                ),
+                
+                // border: const GradientBoxBorder(
+                //   gradient: LinearGradient(
+                //     colors: [Color(0xFFFB923C), Color(0xFF22D3EE)],
+                //     begin: Alignment.topLeft,
+                //     end: Alignment.bottomRight,
+                //   ),
+                //   width: 1.5,
+                // ),
               ),
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
@@ -235,22 +230,20 @@ class _GarmentScreenState extends State<GarmentScreen> {
                             child: Text("Sin categorías"),
                           ),
                         ]
-                      : listaCategorias
-                            .map(
-                              (cat) => DropdownMenuItem(
-                                value: cat,
-                                child: Text(cat),
-                              ),
-                            )
-                            .toList(),
+                      : listaCategorias.map(
+                          (cat) => DropdownMenuItem(
+                            value: cat,
+                            child: Text(cat),
+                          ),
+                        ).toList(),
                   onChanged: (val) =>
                       setState(() => _categoriaSeleccionada = val),
                 ),
               ),
             ),
-            const SizedBox(height: 40),
+            const SizedBox(height: 20),
             Container(
-              width: double.infinity, // Ocupa todo el ancho disponible
+              width: double.infinity,
               height: 60,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
@@ -265,8 +258,8 @@ class _GarmentScreenState extends State<GarmentScreen> {
               ),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFFBE4AD),
-                  foregroundColor: Color(0xFF8C759F),
+                  backgroundColor: Color(0xFFFB923C),
+                  
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
@@ -275,7 +268,6 @@ class _GarmentScreenState extends State<GarmentScreen> {
                 ),
                 onPressed: () {
                   FocusScope.of(context).unfocus();
-
                   final name = _nombreControllador.text.trim();
                   if (_imagenSeleccionada != null &&
                       name.isNotEmpty &&
@@ -296,7 +288,7 @@ class _GarmentScreenState extends State<GarmentScreen> {
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text("! Completa todos los campos y la foto"),
+                        content: Text("¡Completa todos los campos y la foto!"),
                       ),
                     );
                   }
@@ -304,10 +296,9 @@ class _GarmentScreenState extends State<GarmentScreen> {
                 child: const Text(
                   "Guardar en Armario",
                   style: TextStyle(
-                    color: Color(0xFF8C759F), // Mismo morado apagado
-                    fontSize: 20, // Tamaño de fuente
-                    fontWeight:
-                        FontWeight.w500, // Grosor medio (similar a tu imagen)
+                    color: Color.fromARGB(255, 243, 235, 206),
+                    fontSize: 20,
+                    fontWeight:FontWeight.bold,
                   ),
                 ),
               ),

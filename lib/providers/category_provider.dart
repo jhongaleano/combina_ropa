@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CategoryProvider extends ChangeNotifier {
-  List<String> _categoria = ['Camisa', 'Pantalon', 'Zapatos'];
+  List<String> _categoria = ['Camisa', 'Pantalon', 'Zapatos', 'Chaquetas','Accesorios','Buzos'];
 
   List<String> get categoria => _categoria;
 

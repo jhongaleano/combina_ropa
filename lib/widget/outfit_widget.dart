@@ -170,7 +170,7 @@ class _OutfitWidgetState extends State<OutfitWidget> {
                   Hero(
                     tag: 'outfit_tag_${prenda.id}',
                     child: Container(
-                      padding: const EdgeInsets.all(2),
+                    padding: const EdgeInsets.all(2),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
                         gradient: const LinearGradient(
@@ -266,7 +266,7 @@ class OutfitDetailSheet extends StatelessWidget {
                     child: Icon(
                       Icons.style,
                       size: 80,
-                      color: Color(0xFF28283C),
+                      color: Color.fromARGB(255, 243, 243, 250),
                     ),
                   ),
                 ),

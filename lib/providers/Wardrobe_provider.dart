@@ -17,13 +17,13 @@ class WardrobeProvider extends ChangeNotifier {
       _prendas.where((item) => item.isFavorite).toList();
 
   WardrobeProvider() {
-    _cargarPrendasDisco(); // Cargar los favoritos al iniciar la app
+    _cargarPrendasDisco();
   }
 
   Future<File?> prendaImagen() async {
     final XFile? photo = await _picker.pickImage(
       source: ImageSource.camera,
-      imageQuality: 60, // Optimizado para no llenar la memoria
+      imageQuality: 60,
     );
     if (photo != null) {
       return File(photo.path);
@@ -57,7 +57,6 @@ class WardrobeProvider extends ChangeNotifier {
       if (await Vibration.hasVibrator() ?? false) {
         Vibration.vibrate(duration: 100, amplitude: 500);
       }
-
       _guardarPrendasEnDisco();
       notifyListeners();
     }
