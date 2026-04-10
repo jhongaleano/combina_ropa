@@ -4,6 +4,7 @@ import '../widget/outfit_widget.dart';
 import '../screens/favorite-screen.dart';
 import 'package:combina_ropa/screens/garment_screens.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:combina_ropa/screens/sugerencias_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -16,7 +17,7 @@ class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
   final PageController _pageController = PageController();
   // Lista de pantallas para navegar
-  final List<Widget> _pages = [HomeScreen(), FavoriteScreen(), GarmentScreen()];
+  final List<Widget> _pages = [HomeScreen(), FavoriteScreen(), GarmentScreen(), SuggestionsScreen()];
 
   @override
   void dispose() {
