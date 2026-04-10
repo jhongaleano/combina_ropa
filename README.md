@@ -37,6 +37,7 @@ Nuestro equipo dividió las tareas para cumplir con cada requerimiento y aprende
 
 ## Estructura del Proyecto
 El código está organizado de manera modular para facilitar el mantenimiento y la escalabilidad:
+```
 StyleStack/
 │
 ├── android/ , ios/ , web/       # Archivos de configuración por plataforma
@@ -66,7 +67,7 @@ StyleStack/
 ├── .gitignore                  
 ├── pubspec.yaml                 # Dependencias (sensors_plus, shared_preferences, vibration.)
 └── README.md                    # Documentación del proyecto
-
+```
 ---
 
 ## Flujo de la Aplicación
