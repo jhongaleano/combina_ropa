@@ -203,7 +203,7 @@ class _OutfitWidgetState extends State<OutfitWidget> {
                     ),
                     //),
                   ),
-                  const SizedBox(height: 5),
+                  const SizedBox(height: 1),
                   Text(
                     prenda.name,
                     maxLines: 1,
